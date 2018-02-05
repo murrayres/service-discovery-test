@@ -1,7 +1,6 @@
 package main
 
 import "fmt"
-import "bytes"
 import "net/http"
 import "io/ioutil"
 import "os"
@@ -10,25 +9,21 @@ import "github.com/gin-gonic/gin"
 func main() {
 
     router := gin.Default()
-    router.POST("/", publishEvent)
+    router.GET("/send", sendrequest)
+    router.GET("/respond", respondtorequest)
     router.Run()
 }
 
-func publishEvent(c *gin.Context) {
-    event, err := ioutil.ReadAll(c.Request.Body)
-    if err != nil {
-        fmt.Println(err)
-        c.String(500, err.Error())
-        return
-    }
-    bs := bytes.NewBuffer(event)
-    publisherhost := os.Getenv("EVENTS_SERVICE_HOST")
-    publisherport := os.Getenv("EVENTS_SERVICE_PORT")
-    publisheruri := "/"
-    fulllocation := "http://" + publisherhost + ":" + publisherport + publisheruri
-    fmt.Println(fulllocation)
+
+
+func sendrequest(c *gin.Context) {
+    
+    host := os.Getenv("SDRESPOND_SERVICE_HOST")
+    port := os.Getenv("SDRESPOND_SERVICE_PORT")
+    location := "http://" + host + ":" + port+"/respond"
+    fmt.Println(location)
     client := http.Client{}
-    req, err := http.NewRequest("POST", fulllocation, bs)
+    req, err := http.NewRequest("GET", location, nil)
     if err != nil {
         fmt.Println(err)
         c.String(500, err.Error())
@@ -52,5 +47,12 @@ func publishEvent(c *gin.Context) {
         return
     }
     c.String(resp.StatusCode, string(bodybytes))
+}
+
+func respondtorequest(c *gin.Context) {
+
+       c.String(200, "") 
+
+
 }
 
