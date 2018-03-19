@@ -18,9 +18,11 @@ func main() {
 
 func sendrequest(c *gin.Context) {
     
-    host := os.Getenv("SDRESPOND_SERVICE_HOST")
-    port := os.Getenv("SDRESPOND_SERVICE_PORT")
-    location := "http://" + host + ":" + port+"/respond"
+//    host := os.Getenv("SDRESPOND_SERVICE_HOST")
+//    port := os.Getenv("SDRESPOND_SERVICE_PORT")
+//    location := "http://" + host + ":" + port+"/respond"
+      location := "http://sdrespond.alamo:"+os.Getenv("SDRESPOND_SERVICE_PORT")
+
     fmt.Println(location)
     client := http.Client{}
     req, err := http.NewRequest("GET", location, nil)
